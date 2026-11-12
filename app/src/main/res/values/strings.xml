@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">B4 单词记忆</string>
+    <string name="eyebrow">B4 · WORD MEMORY</string>
+    <string name="title_main">单词记忆</string>
+    <string name="subtitle_main">每天 10 个词，先记牢，再复习</string>
+    <string name="today_progress">今日进度</string>
+    <string name="my_words">我的词库</string>
+    <string name="action_start">开始学习</string>
+    <string name="status_new">未学</string>
+    <string name="status_learned">已掌握</string>
+    <string name="study_title">学习中</string>
+    <string name="study_hint">点击卡片查看释义</string>
+    <string name="action_unknown">不认识</string>
+    <string name="action_known">认识</string>
+    <string name="round_finished">本轮学习完成</string>
+    <string name="progress_format">%1$d / %2$d</string>
+</resources>
