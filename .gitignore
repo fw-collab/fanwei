@@ -2,6 +2,7 @@
 .gradle-dist/
 .gradle-home/
 .android-home/
+.ssh/
 .tmp-*/
 
 # ---------- Gradle ----------
