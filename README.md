@@ -49,8 +49,8 @@
 | IDE / 构建 | Android Studio（Ladybug 及以上）、Gradle 9.6.0、AGP 9.4.0、Kotlin DSL |
 | UI | XML + ViewBinding + Material 3 + RecyclerView + Navigation + 自定义 View |
 | 架构 | 当前原型为 Activity + Repository；目标为 MVVM + ViewModel + StateFlow |
-| 本地存储 | 当前原型使用 SharedPreferences 保存掌握状态；目标为 Room 2.6.x + KSP |
-| 异步 | 当前原型为同步读写；目标为 Kotlin Coroutines + Flow |
+| 本地存储 | 数据层已使用 Room 2.8.5 + KSP；当前首页原型仍用 SharedPreferences，待 Repository 接入 |
+| 异步 | DAO 已使用 `suspend` + `Flow`；Repository/ViewModel 待接入 |
 | 图表 | MPAndroidChart 3.1.0（折线图/饼图/柱状图） |
 | 系统能力 | TextToSpeech、ContentProvider / ContentResolver、自定义 View、属性动画 |
 | 测试 | JUnit4、AndroidX Test、Espresso、Room 内存数据库 |
@@ -106,7 +106,9 @@ danci/
 ├─ docs/
 │  ├─ 01-选题报审.md
 │  ├─ 02-AndroidStudio项目初始化.md
-│  └─ 03-数据共享契约.md
+│  ├─ 03-数据共享契约.md
+│  └─ 04-数据模型设计.md
+├─ app/schemas/             # Room 导出的数据库 schema
 ├─ gradle/wrapper/          # Gradle Wrapper
 ├─ gradlew
 ├─ gradlew.bat
@@ -117,7 +119,7 @@ danci/
 └─ README.md
 ```
 
-当前 B4 主 App 已创建并可运行；P2 的两个模块待 M3 按文档创建。
+当前 B4 主 App 已创建并可运行；M2 数据层（Room 三表、DAO、Database）已完成；P2 的两个模块待 M3 按文档创建。
 
 ### 运行 B4 主 App
 
@@ -131,7 +133,7 @@ danci/
 | 阶段 | 内容 | 产出 |
 |---|---|---|
 | M1 | 仓库初始化、选题报审、模块与数据共享方案 | 本文档、报审文档、初始化步骤、`.gitignore` |
-| M2 | Android Studio 工程骨架、B4 可运行原型、Room、Provider | 主 App 原型已可运行；Room/Provider 待补齐 |
+| M2 | Android Studio 工程骨架、B4 可运行原型、Room 三表、DAO、Database | B4 原型可运行；Room 数据层已完成；Provider 待补齐 |
 | M3 | P2 看板 UI、图表、独立宿主、只读查询 | 可独立启动的伴生 APK |
 | M4 | 测试、空态/异常处理、演示数据、答辩材料 | 可演示的完整双端项目 |
 
@@ -140,3 +142,4 @@ danci/
 - [选题报审（教师审核版）](docs/01-选题报审.md)
 - [Android Studio 新建项目与模块配置步骤](docs/02-AndroidStudio项目初始化.md)
 - [主 App 与伴生端数据共享契约](docs/03-数据共享契约.md)
+- [里程碑 2：数据模型设计](docs/04-数据模型设计.md)
