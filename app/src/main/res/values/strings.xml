@@ -15,4 +15,55 @@
     <string name="action_known">认识</string>
     <string name="round_finished">本轮学习完成</string>
     <string name="progress_format">%1$d / %2$d</string>
+
+    <!-- M3 底部导航与页面空壳 -->
+    <string name="tab_word_list">单词本</string>
+    <string name="tab_review">复习</string>
+    <string name="tab_wrong_book">错题本</string>
+    <string name="tab_home_stat">数据</string>
+    <string name="tab_setting">设置</string>
+
+    <string name="word_list_eyebrow">WORD BOOK</string>
+    <string name="word_list_title">单词本</string>
+    <string name="word_list_subtitle">管理你的词库，查看每个单词的掌握状态</string>
+    <string name="word_list_placeholder_title">词库列表将在这里展示</string>
+    <string name="word_list_placeholder_desc">下一步接入 Room 的 WordDao，再填充列表和搜索。</string>
+    <string name="word_list_empty_title">词库里还没有单词</string>
+    <string name="word_list_empty_desc">添加第一个单词后，它会出现在这里。</string>
+
+    <string name="review_eyebrow">REVIEW</string>
+    <string name="review_title">复习</string>
+    <string name="review_subtitle">按计划复习到期单词，把短期记忆变成长期记忆</string>
+    <string name="review_placeholder_title">复习队列将在这里展示</string>
+    <string name="review_placeholder_desc">下一步接入 ReviewRecord 和复习计划，再填充卡片。</string>
+    <string name="review_empty_title">今天没有待复习单词</string>
+    <string name="review_empty_desc">完成一次学习后，复习任务会出现在这里。</string>
+
+    <string name="wrong_eyebrow">MISTAKES</string>
+    <string name="wrong_title">错题本</string>
+    <string name="wrong_subtitle">集中查看答错的单词，逐个击破薄弱点</string>
+    <string name="wrong_placeholder_title">错题记录将在这里展示</string>
+    <string name="wrong_placeholder_desc">下一步接入 WrongRecord，再填充错题列表和筛选。</string>
+    <string name="wrong_empty_title">还没有错题记录</string>
+    <string name="wrong_empty_desc">答错的单词会自动收集到这里。</string>
+
+    <string name="stat_eyebrow">OVERVIEW</string>
+    <string name="stat_title">数据概览</string>
+    <string name="stat_subtitle">用学习量、正确率和趋势了解自己的节奏</string>
+    <string name="stat_placeholder_title">统计卡片和图表将在这里展示</string>
+    <string name="stat_placeholder_desc">下一步用聚合查询 + 图表接入学习趋势和掌握度。</string>
+    <string name="stat_empty_title">还没有学习数据</string>
+    <string name="stat_empty_desc">开始学习并完成复习后，这里会生成统计。</string>
+
+    <string name="setting_eyebrow">SETTINGS</string>
+    <string name="setting_title">设置</string>
+    <string name="setting_subtitle">调整每日目标、发音和显示偏好</string>
+    <string name="setting_placeholder_title">设置项将在这里展示</string>
+    <string name="setting_placeholder_desc">下一步接入 DataStore，保存每日目标和 TTS 开关。</string>
+    <string name="setting_empty_title">设置暂不可用</string>
+    <string name="setting_empty_desc">配置项接入后会显示在这里。</string>
+
+    <string name="state_loading">正在加载…</string>
+    <string name="state_retry">重新加载</string>
 </resources>
+

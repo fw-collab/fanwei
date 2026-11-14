@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/wordListFragment">
+
+    <fragment
+        android:id="@+id/wordListFragment"
+        android:name="com.example.wordmemory.ui.wordlist.WordListFragment"
+        android:label="@string/tab_word_list" />
+
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="com.example.wordmemory.ui.review.ReviewFragment"
+        android:label="@string/tab_review" />
+
+    <fragment
+        android:id="@+id/wrongBookFragment"
+        android:name="com.example.wordmemory.ui.wrongbook.WrongBookFragment"
+        android:label="@string/tab_wrong_book" />
+
+    <fragment
+        android:id="@+id/homeStatFragment"
+        android:name="com.example.wordmemory.ui.stat.HomeStatFragment"
+        android:label="@string/tab_home_stat" />
+
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.wordmemory.ui.setting.SettingFragment"
+        android:label="@string/tab_setting" />
+
+</navigation>

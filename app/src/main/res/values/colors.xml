@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="paper">#F7F4ED</color>
-    <color name="card">#FFFFFF</color>
-    <color name="ink">#16243D</color>
-    <color name="ink_soft">#5C667A</color>
-    <color name="line">#D9D3C6</color>
-    <color name="accent">#B07A3A</color>
-    <color name="badge">#E8EDF7</color>
-    <color name="badge_text">#2E4A7D</color>
+    <!-- 主色：蓝色 + 橙色活力色系，刻意不使用绿色 -->
+    <color name="blue_primary">#1F5FBF</color>
+    <color name="blue_dark">#123B73</color>
+    <color name="blue_soft">#E8F0FE</color>
+    <color name="orange_primary">#F28A2E</color>
+    <color name="orange_soft">#FFF0E1</color>
+
+    <color name="app_background">#F4F7FC</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text_primary">#14213D</color>
+    <color name="text_secondary">#61708A</color>
+    <color name="divider">#DCE4F0</color>
+    <color name="nav_unselected">#8A97AA</color>
+    <color name="error_red">#C0392B</color>
+
+    <!-- 兼容旧页面使用的颜色别名 -->
+    <color name="paper">@color/app_background</color>
+    <color name="card">@color/surface</color>
+    <color name="ink">@color/text_primary</color>
+    <color name="ink_soft">@color/text_secondary</color>
+    <color name="line">@color/divider</color>
+    <color name="accent">@color/orange_primary</color>
+    <color name="badge">@color/blue_soft</color>
+    <color name="badge_text">@color/blue_primary</color>
 </resources>
