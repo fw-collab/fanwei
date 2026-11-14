@@ -8,6 +8,7 @@
     <string name="my_words">我的词库</string>
     <string name="action_start">开始学习</string>
     <string name="status_new">未学</string>
+    <string name="status_learning">学习中</string>
     <string name="status_learned">已掌握</string>
     <string name="study_title">学习中</string>
     <string name="study_hint">点击卡片查看释义</string>
@@ -65,5 +66,24 @@
 
     <string name="state_loading">正在加载…</string>
     <string name="state_retry">重新加载</string>
+
+    <!-- 单词本增删改 -->
+    <string name="word_add_title">新增单词</string>
+    <string name="word_edit_title">编辑单词</string>
+    <string name="word_add_action">添加单词</string>
+    <string name="word_add_first">添加第一个单词</string>
+    <string name="word_delete_title">删除单词</string>
+    <string name="word_delete_message">确定删除“%1$s”吗？关联的复习记录和错题记录也会一并删除。</string>
+    <string name="word_delete_confirm">删除</string>
+    <string name="word_save">保存</string>
+    <string name="word_cancel">取消</string>
+    <string name="word_hint_spelling">英文单词</string>
+    <string name="word_hint_phonetic">音标（可选）</string>
+    <string name="word_hint_meaning">中文释义</string>
+    <string name="word_error_spelling">请输入英文单词</string>
+    <string name="word_error_meaning">请输入中文释义</string>
+    <string name="word_list_count">共 %1$d 个单词</string>
+    <string name="word_list_tip">点击单词编辑，长按删除</string>
 </resources>
+
 

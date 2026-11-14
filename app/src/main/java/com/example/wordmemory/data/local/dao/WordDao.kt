@@ -41,6 +41,10 @@ interface WordDao {
     @Query("SELECT * FROM words ORDER BY created_at DESC")
     fun observeAll(): Flow<List<Word>>
 
+    /** 一次性查询所有单词，供下拉刷新使用。 */
+    @Query("SELECT * FROM words ORDER BY created_at DESC")
+    suspend fun getAllOnce(): List<Word>
+
     /** 按主键查询单词。 */
     @Query("SELECT * FROM words WHERE id = :wordId LIMIT 1")
     suspend fun findById(wordId: Long): Word?

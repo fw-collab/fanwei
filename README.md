@@ -1,6 +1,6 @@
 # B4 单词记忆 + P2 数据看板
 
-> 课程设计 · 里程碑 1：仓库初始化 + 选题报审；M2：B4 可运行原型  
+> 课程设计 · M1 仓库初始化 + 选题报审；M2 Room 数据层；M3 底部导航；M4 单词本 CRUD  
 > 技术路线：Kotlin 原生 Android Studio，不使用 Flutter / React Native / uni-app 等跨平台框架。
 
 ## 1. 项目简介
@@ -11,7 +11,7 @@
 - **伴生端（P2 数据看板，`:data_board_module` + `:board_app`）**：以独立 APK 启动，只读展示主 App 的学习概览、趋势、掌握度、词书进度和难词榜。
 - **数据边界**：主 App 的 Room 数据库是唯一数据源；伴生端不建库、不复制数据库文件，通过主 App 提供的只读 `ContentProvider` 读取数据。
 
-当前已创建 **B4 主 App 可运行原型**：示例词库列表、卡片学习、掌握状态本地持久化和今日进度。P2 伴生端与 Room/MVVM 迁移按后续里程碑补齐。
+当前 B4 主 App 已完成 Room 数据层、底部导航骨架和单词本 CRUD：单词列表、下拉刷新、新增/编辑/删除、加载态/空态。P2 伴生端和复习/测验功能按后续里程碑补齐。
 
 ## 2. 功能清单
 
@@ -27,7 +27,7 @@
 | B4-06 | 学习记录与统计 | 每日新学/复习数量、正确率、连续天数；按日查看历史记录 |
 | B4-07 | 设置与数据管理 | 每日目标、TTS 开关、主题模式、学习数据重置、关于页面 |
 
-> 当前可运行原型已实现：示例词库列表、卡片学习（点击查看释义、认识/不认识）、掌握状态持久化、今日进度。其余功能按 M2/M3 逐步补齐。
+> 当前已实现：Room 单词本列表、下拉刷新、新增/编辑/删除、加载态和空态；复习、错题、数据、设置四个 Tab 仍为页面空壳。旧卡片学习原型不再作为主入口。
 
 ### 2.2 伴生端：P2 数据看板
 
@@ -48,9 +48,9 @@
 | 语言 | Kotlin 2.0+ |
 | IDE / 构建 | Android Studio（Ladybug 及以上）、Gradle 9.6.0、AGP 9.4.0、Kotlin DSL |
 | UI | XML + ViewBinding + Material 3 + RecyclerView + Navigation + 自定义 View |
-| 架构 | 当前原型为 Activity + Repository；目标为 MVVM + ViewModel + StateFlow |
-| 本地存储 | 数据层已使用 Room 2.8.5 + KSP；当前首页原型仍用 SharedPreferences，待 Repository 接入 |
-| 异步 | DAO 已使用 `suspend` + `Flow`；Repository/ViewModel 待接入 |
+| 架构 | WordList 已接入 MVVM + Repository + StateFlow；其余 Tab 暂为空壳 |
+| 本地存储 | Room 2.8.5 + KSP；旧 StudyActivity 的 SharedPreferences 仅作为未使用原型保留 |
+| 异步 | Repository 使用 `suspend` + `Dispatchers.IO`，DAO 列表使用 `Flow` |
 | 图表 | MPAndroidChart 3.1.0（折线图/饼图/柱状图） |
 | 系统能力 | TextToSpeech、ContentProvider / ContentResolver、自定义 View、属性动画 |
 | 测试 | JUnit4、AndroidX Test、Espresso、Room 内存数据库 |
@@ -119,7 +119,7 @@ danci/
 └─ README.md
 ```
 
-当前 B4 主 App 已创建并可运行；M2 数据层（Room 三表、DAO、Database）和 M3 底部导航骨架已完成；P2 的两个模块待后续按文档创建。
+当前 B4 主 App 已创建并可运行；M2 数据层、M3 底部导航、M4 单词本 CRUD 已完成；P2 的两个模块待后续按文档创建。
 
 ### 运行 B4 主 App
 
@@ -135,7 +135,8 @@ danci/
 | M1 | 仓库初始化、选题报审、模块与数据共享方案 | 本文档、报审文档、初始化步骤、`.gitignore` |
 | M2 | Android Studio 工程骨架、B4 可运行原型、Room 三表、DAO、Database | B4 原型可运行；Room 数据层已完成；Provider 待补齐 |
 | M3 | B4 主 App 底部导航（单词本/复习/错题本/数据/设置）、五个 Fragment 空壳、蓝橙主题 | 五 Tab 可切换的导航骨架 |
-| M4 | P2 看板 UI、图表、独立宿主；测试与答辩材料 | 可演示的完整双端项目 |
+| M4 | WordRepository、WordListViewModel、单词列表、下拉刷新、新增/编辑/删除、空态/加载态 | 单词本基础 CRUD 完成 |
+| M5 | P2 看板 UI、图表、独立宿主；复习/测验/测试与答辩材料 | 可演示的完整双端项目 |
 
 ## 7. 文档索引
 
