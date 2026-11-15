@@ -51,6 +51,7 @@
 | 架构 | WordList 已接入 MVVM + Repository + StateFlow；其余 Tab 暂为空壳 |
 | 本地存储 | Room 2.8.5 + KSP；旧 StudyActivity 的 SharedPreferences 仅作为未使用原型保留 |
 | 异步 | Repository 使用 `suspend` + `Dispatchers.IO`，DAO 列表使用 `Flow` |
+| 算法 | 简化艾宾浩斯：5min–30d 共 9 级，答对升级、答错重置 |
 | 图表 | MPAndroidChart 3.1.0（折线图/饼图/柱状图） |
 | 系统能力 | TextToSpeech、ContentProvider / ContentResolver、自定义 View、属性动画 |
 | 测试 | JUnit4、AndroidX Test、Espresso、Room 内存数据库 |
@@ -119,7 +120,7 @@ danci/
 └─ README.md
 ```
 
-当前 B4 主 App 已创建并可运行；M2 数据层、M3 底部导航、M4 单词本 CRUD 已完成；P2 的两个模块待后续按文档创建。
+当前 B4 主 App 已创建并可运行；M2 数据层、M3 底部导航、M4 单词本 CRUD、M5 艾宾浩斯算法已完成；P2 的两个模块待后续按文档创建。
 
 ### 运行 B4 主 App
 
@@ -136,7 +137,8 @@ danci/
 | M2 | Android Studio 工程骨架、B4 可运行原型、Room 三表、DAO、Database | B4 原型可运行；Room 数据层已完成；Provider 待补齐 |
 | M3 | B4 主 App 底部导航（单词本/复习/错题本/数据/设置）、五个 Fragment 空壳、蓝橙主题 | 五 Tab 可切换的导航骨架 |
 | M4 | WordRepository、WordListViewModel、单词列表、下拉刷新、新增/编辑/删除、空态/加载态 | 单词本基础 CRUD 完成 |
-| M5 | P2 看板 UI、图表、独立宿主；复习/测验/测试与答辩材料 | 可演示的完整双端项目 |
+| M5 | EbbinghausUtil、0–8 级复习间隔、答对升级/答错重置、待复习队列查询、单元测试 | 简化艾宾浩斯算法完成 |
+| M6 | P2 看板 UI、图表、独立宿主；复习/测验与答辩材料 | 可演示的完整双端项目 |
 
 ## 7. 文档索引
 
@@ -144,3 +146,4 @@ danci/
 - [Android Studio 新建项目与模块配置步骤](docs/02-AndroidStudio项目初始化.md)
 - [主 App 与伴生端数据共享契约](docs/03-数据共享契约.md)
 - [里程碑 2：数据模型设计](docs/04-数据模型设计.md)
+- [里程碑 5：艾宾浩斯遗忘曲线算法](docs/05-艾宾浩斯算法.md)

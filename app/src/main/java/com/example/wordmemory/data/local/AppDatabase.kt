@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.wordmemory.data.local.dao.ReviewRecordDao
 import com.example.wordmemory.data.local.dao.WordDao
 import com.example.wordmemory.data.local.dao.WrongRecordDao
@@ -24,7 +26,7 @@ import com.example.wordmemory.data.local.entity.WrongRecord
  */
 @Database(
     entities = [Word::class, ReviewRecord::class, WrongRecord::class],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -38,6 +40,27 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         private const val DATABASE_NAME = "word_memory.db"
 
+        /**
+         * v1 → v2：
+         * - 给 words 增加艾宾浩斯记忆等级 memory_level；
+         * - 给 words 增加下次复习时间 next_review_time；
+         * - 为待复习队列增加时间索引。
+         */
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE words ADD COLUMN memory_level INTEGER NOT NULL DEFAULT 0"
+                )
+                db.execSQL(
+                    "ALTER TABLE words ADD COLUMN next_review_time INTEGER"
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS index_words_next_review_time " +
+                        "ON words(next_review_time)"
+                )
+            }
+        }
+
         @Volatile
         private var instance: AppDatabase? = null
 
@@ -48,7 +71,10 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DATABASE_NAME,
-                ).build().also { instance = it }
+                )
+                    .addMigrations(MIGRATION_1_2)
+                    .build()
+                    .also { instance = it }
             }
         }
     }

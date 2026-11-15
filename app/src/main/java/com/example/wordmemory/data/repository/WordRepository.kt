@@ -27,6 +27,16 @@ class WordRepository(private val wordDao: WordDao) {
         wordDao.getAllOnce()
     }
 
+    /** 观察当前时间已到期的复习队列。 */
+    fun observeDueWords(now: Long): Flow<List<Word>> {
+        return wordDao.observeDueWords(now).flowOn(Dispatchers.IO)
+    }
+
+    /** 一次性读取当前到期的复习队列。 */
+    suspend fun getDueWords(now: Long): Result<List<Word>> = dbCall {
+        wordDao.getDueWords(now)
+    }
+
     /** 新增单词。 */
     suspend fun insert(word: Word): Result<Long> = dbCall {
         wordDao.insert(word)

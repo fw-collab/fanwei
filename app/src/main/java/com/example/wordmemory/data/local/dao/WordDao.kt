@@ -45,6 +45,27 @@ interface WordDao {
     @Query("SELECT * FROM words ORDER BY created_at DESC")
     suspend fun getAllOnce(): List<Word>
 
+    /**
+     * 待复习队列：next_review_time 非空，且已到复习时间（<= now）。
+     * 按到期时间升序，最紧急的排在最前面。
+     *
+     * 注意：Flow 的 now 是调用时传入的快照；时间推移后需要重新订阅或定时刷新。
+     */
+    @Query(
+        "SELECT * FROM words " +
+            "WHERE next_review_time IS NOT NULL AND next_review_time <= :now " +
+            "ORDER BY next_review_time ASC"
+    )
+    fun observeDueWords(now: Long): Flow<List<Word>>
+
+    /** 一次性查询待复习单词，供刷新/测试使用。 */
+    @Query(
+        "SELECT * FROM words " +
+            "WHERE next_review_time IS NOT NULL AND next_review_time <= :now " +
+            "ORDER BY next_review_time ASC"
+    )
+    suspend fun getDueWords(now: Long): List<Word>
+
     /** 按主键查询单词。 */
     @Query("SELECT * FROM words WHERE id = :wordId LIMIT 1")
     suspend fun findById(wordId: Long): Word?

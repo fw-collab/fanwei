@@ -19,6 +19,8 @@ import androidx.room.PrimaryKey
         // 同一个单词只保留一条，避免重复导入
         Index(value = ["spelling"], unique = true),
         Index(value = ["created_at"]),
+        // 复习队列按 next_review_time 过滤和排序
+        Index(value = ["next_review_time"]),
     ],
 )
 data class Word(
@@ -53,4 +55,18 @@ data class Word(
     /** 创建时间，Unix 毫秒时间戳。 */
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis(),
+
+    /**
+     * 艾宾浩斯记忆等级，范围 0–8。
+     * 0 = 新学/答错重置，8 = 最高级。
+     */
+    @ColumnInfo(name = "memory_level", defaultValue = "0")
+    val memoryLevel: Int = 0,
+
+    /**
+     * 下一次复习时间，Unix 毫秒时间戳。
+     * null 表示还没有排入复习计划（例如刚创建、尚未开始学习）。
+     */
+    @ColumnInfo(name = "next_review_time")
+    val nextReviewTime: Long? = null,
 )
