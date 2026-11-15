@@ -98,6 +98,9 @@ class WordListViewModel(
                     spelling = cleanSpelling,
                     phonetic = cleanPhonetic,
                     meaning = cleanMeaning,
+                    // 新词先从 0 级开始，并立即进入复习队列
+                    memoryLevel = 0,
+                    nextReviewTime = System.currentTimeMillis(),
                 )
             ).onSuccess {
                 _events.emit("已添加 $cleanSpelling")

@@ -39,6 +39,15 @@
     <string name="review_placeholder_desc">下一步接入 ReviewRecord 和复习计划，再填充卡片。</string>
     <string name="review_empty_title">今天没有待复习单词</string>
     <string name="review_empty_desc">完成一次学习后，复习任务会出现在这里。</string>
+    <string name="review_hint">点击卡片查看释义和音标</string>
+    <string name="review_remember">记住</string>
+    <string name="review_forget">忘记</string>
+    <string name="review_remaining">剩余 %1$d 个</string>
+    <string name="review_complete_title">本轮复习完成</string>
+    <string name="review_complete_desc">队列中的单词都复习完了，稍后回来继续。</string>
+    <string name="review_remembered">已记住，下一次复习已安排</string>
+    <string name="review_forgotten">已加入错题本，5 分钟后再复习</string>
+    <string name="review_save_failed">保存失败，请重试</string>
 
     <string name="wrong_eyebrow">MISTAKES</string>
     <string name="wrong_title">错题本</string>
