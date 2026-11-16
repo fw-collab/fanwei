@@ -17,7 +17,22 @@
     <fragment
         android:id="@+id/wrongBookFragment"
         android:name="com.example.wordmemory.ui.wrongbook.WrongBookFragment"
-        android:label="@string/tab_wrong_book" />
+        android:label="@string/tab_wrong_book">
+
+        <action
+            android:id="@+id/action_wrongBook_to_wrongDetail"
+            app:destination="@id/wrongDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/wrongDetailFragment"
+        android:name="com.example.wordmemory.ui.wrongbook.WrongDetailFragment"
+        android:label="@string/wrong_detail_title">
+
+        <argument
+            android:name="wordId"
+            app:argType="long" />
+    </fragment>
 
     <fragment
         android:id="@+id/homeStatFragment"

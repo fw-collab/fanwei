@@ -56,6 +56,19 @@
     <string name="wrong_placeholder_desc">下一步接入 WrongRecord，再填充错题列表和筛选。</string>
     <string name="wrong_empty_title">还没有错题记录</string>
     <string name="wrong_empty_desc">答错的单词会自动收集到这里。</string>
+    <string name="wrong_book_count">共 %1$d 个错词</string>
+    <string name="wrong_book_tip">点击查看详情</string>
+    <string name="wrong_count_badge">%1$d 次</string>
+    <string name="wrong_last_time">上次答错：%1$s</string>
+    <string name="wrong_detail_title">错题详情</string>
+    <string name="wrong_detail_wrong_count">答错次数</string>
+    <string name="wrong_detail_last_time">上次答错</string>
+    <string name="wrong_remove">移出错题本</string>
+    <string name="wrong_remove_message">确定把“%1$s”从错题本移除吗？只会删除错题记录，不会删除单词。</string>
+    <string name="wrong_remove_confirm">移出</string>
+    <string name="wrong_not_found">错题记录不存在</string>
+    <string name="wrong_not_found_desc">它可能已经被移出错题本。</string>
+    <string name="wrong_removed">已从错题本移除</string>
 
     <string name="stat_eyebrow">OVERVIEW</string>
     <string name="stat_title">数据概览</string>
