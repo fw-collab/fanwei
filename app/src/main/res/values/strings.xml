@@ -49,6 +49,21 @@
     <string name="review_forgotten">已加入错题本，5 分钟后再复习</string>
     <string name="review_save_failed">保存失败，请重试</string>
 
+    <!-- 通知与提醒 -->
+    <string name="notification_channel_name">复习提醒</string>
+    <string name="notification_channel_desc">每天提醒你完成待复习单词</string>
+    <string name="notification_title">该复习单词了</string>
+    <string name="notification_text">今天有 %1$d 个单词待复习，点开继续。</string>
+    <string name="notification_permission_title">开启复习提醒</string>
+    <string name="notification_permission_message">开启通知后，App 会在每天 20:00 提醒你复习。若关闭通知，首页仍会显示待复习数量，但不会弹出提醒。</string>
+    <string name="notification_permission_allow">去开启</string>
+    <string name="notification_permission_later">暂不开启</string>
+    <string name="notification_permission_off">通知权限已关闭，请手动打开查看提醒</string>
+    <string name="notification_open_settings">去开启</string>
+    <string name="reminder_due_format">待复习 %1$d 个单词</string>
+    <string name="reminder_no_due">暂无待复习单词</string>
+    <string name="reminder_title">复习提醒</string>
+
     <string name="wrong_eyebrow">MISTAKES</string>
     <string name="wrong_title">错题本</string>
     <string name="wrong_subtitle">集中查看答错的单词，逐个击破薄弱点</string>

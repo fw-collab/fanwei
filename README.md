@@ -27,7 +27,7 @@
 | B4-06 | 学习记录与统计 | 每日新学/复习数量、正确率、连续天数；按日查看历史记录 |
 | B4-07 | 设置与数据管理 | 每日目标、TTS 开关、主题模式、学习数据重置、关于页面 |
 
-> 当前已实现：Room 单词本列表、下拉刷新、新增/编辑/删除、加载态和空态；复习卡片翻转、记住/忘记分支和复习完成空态；错题本列表、详情和移出错题本。数据、设置两个 Tab 仍为页面空壳。
+> 当前已实现：Room 单词本列表、下拉刷新、新增/编辑/删除、加载态和空态；复习卡片翻转、记住/忘记分支和复习完成空态；错题本列表、详情和移出错题本；通知权限申请、每日 WorkManager 复习提醒和权限关闭降级提示。数据、设置两个 Tab 仍为页面空壳。
 
 ### 2.2 伴生端：P2 数据看板
 
@@ -48,10 +48,12 @@
 | 语言 | Kotlin 2.0+ |
 | IDE / 构建 | Android Studio（Ladybug 及以上）、Gradle 9.6.0、AGP 9.4.0、Kotlin DSL |
 | UI | XML + ViewBinding + Material 3 + RecyclerView + Navigation + 自定义 View |
-| 架构 | WordList 已接入 MVVM + Repository + StateFlow；其余 Tab 暂为空壳 |
+| 架构 | MVVM + Repository + StateFlow/Flow；单词本、复习、错题本已接入 |
 | 本地存储 | Room 2.8.5 + KSP；旧 StudyActivity 的 SharedPreferences 仅作为未使用原型保留 |
 | 异步 | Repository 使用 `suspend` + `Dispatchers.IO`，DAO 列表使用 `Flow` |
 | 算法 | 简化艾宾浩斯：5min–30d 共 9 级，答对升级、答错重置 |
+| 后台任务 | WorkManager 2.10.0，每日 20:00 查询待复习单词 |
+| 系统通知 | NotificationChannel + Android 13+ POST_NOTIFICATIONS 动态权限 |
 | 图表 | MPAndroidChart 3.1.0（折线图/饼图/柱状图） |
 | 系统能力 | TextToSpeech、ContentProvider / ContentResolver、自定义 View、属性动画 |
 | 测试 | JUnit4、AndroidX Test、Espresso、Room 内存数据库 |
@@ -120,7 +122,7 @@ danci/
 └─ README.md
 ```
 
-当前 B4 主 App 已创建并可运行；M2 数据层、M3 底部导航、M4 单词本 CRUD、M5 艾宾浩斯算法、M6 复习卡片流程、M7 错题本已完成；P2 的两个模块待后续按文档创建。
+当前 B4 主 App 已创建并可运行；M2 数据层、M3 底部导航、M4 单词本 CRUD、M5 艾宾浩斯算法、M6 复习卡片流程、M7 错题本、M7.5 通知与 WorkManager 提醒已完成；P2 的两个模块待后续按文档创建。
 
 ### 运行 B4 主 App
 
@@ -140,6 +142,7 @@ danci/
 | M5 | EbbinghausUtil、0–8 级复习间隔、答对升级/答错重置、待复习队列查询、单元测试 | 简化艾宾浩斯算法完成 |
 | M6 | 复习卡片翻转、记住/忘记分支、事务更新 Word + ReviewRecord、答错写入 WrongRecord、复习完成空态 | 复习主流程联调完成 |
 | M7 | 错题本列表（按单词聚合错误次数/最近时间）、错题详情、移出错题本、列表→详情导航 | 错题展示管理完成 |
+| M7.5 | Android 13+ 通知权限、每日 WorkManager 提醒、NotificationChannel、权限关闭降级提示 | 后台提醒与降级方案完成 |
 | M8 | P2 看板 UI、图表、独立宿主；数据/设置与答辩材料 | 可演示的完整双端项目 |
 
 ## 7. 文档索引
@@ -149,3 +152,4 @@ danci/
 - [主 App 与伴生端数据共享契约](docs/03-数据共享契约.md)
 - [里程碑 2：数据模型设计](docs/04-数据模型设计.md)
 - [里程碑 5：艾宾浩斯遗忘曲线算法](docs/05-艾宾浩斯算法.md)
+- [M7.5：通知权限与 WorkManager 复习提醒](docs/06-通知与定时提醒.md)

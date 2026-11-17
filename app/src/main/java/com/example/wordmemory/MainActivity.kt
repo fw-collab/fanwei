@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.wordmemory.databinding.ActivityMainBinding
+import com.example.wordmemory.notification.NotificationHelper
 
 /**
  * 主 App 导航骨架。
@@ -23,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // 提前创建通知通道，保证通知设置页能看到“复习提醒”
+        NotificationHelper.createChannel(this)
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.navHostFragment) as NavHostFragment

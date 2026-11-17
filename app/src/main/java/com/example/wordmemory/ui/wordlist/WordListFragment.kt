@@ -1,11 +1,20 @@
 package com.example.wordmemory.ui.wordlist
 
+import android.Manifest
+import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -40,6 +49,23 @@ class WordListFragment : Fragment() {
         WordListViewModel.factory(requireContext())
     }
 
+    private val reminderViewModel: ReminderViewModel by viewModels {
+        ReminderViewModel.factory(requireContext())
+    }
+
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        reminderViewModel.onPermissionResult(granted)
+        if (!granted) {
+            Toast.makeText(
+                requireContext(),
+                R.string.notification_permission_off,
+                Toast.LENGTH_LONG,
+            ).show()
+        }
+    }
+
     private lateinit var adapter: WordListAdapter
 
     override fun onCreateView(
@@ -68,6 +94,11 @@ class WordListFragment : Fragment() {
         binding.swipeRefresh.setOnRefreshListener { viewModel.refresh() }
         binding.fabAdd.setOnClickListener { showWordDialog(null) }
         binding.btnEmptyAdd.setOnClickListener { showWordDialog(null) }
+        binding.btnNotificationSettings.setOnClickListener { openNotificationSettings() }
+
+        // 页面创建时确保每日提醒已调度；ViewModel + 唯一任务名双重防重复
+        reminderViewModel.ensureReminderScheduled()
+        askNotificationPermissionIfNeeded()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -79,8 +110,16 @@ class WordListFragment : Fragment() {
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
                 }
+                launch {
+                    reminderViewModel.uiState.collect { state -> renderReminder(state) }
+                }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reminderViewModel.refresh()
     }
 
     private fun render(state: WordListUiState) {
@@ -92,6 +131,71 @@ class WordListFragment : Fragment() {
         binding.loadingContainer.isVisible = state.isLoading && !hasWords
         binding.emptyContainer.isVisible = !state.isLoading && !hasWords
         binding.swipeRefresh.isRefreshing = state.isRefreshing
+    }
+
+    /**
+     * 首页提醒条：
+     * - 通知权限开启且有到期单词：显示数字；
+     * - 通知权限关闭：显示降级文案和“去开启”按钮；
+     * - 无到期且权限正常：隐藏。
+     */
+    private fun renderReminder(state: ReminderUiState) {
+        val show = !state.notificationsEnabled || state.dueCount > 0
+        binding.reminderCard.isVisible = show
+
+        val hasDue = state.dueCount > 0
+        binding.tvReminderBadge.isVisible = hasDue
+        binding.tvReminderBadge.text = if (state.dueCount > 99) "99+" else state.dueCount.toString()
+
+        binding.tvReminderTitle.text = if (hasDue) {
+            getString(R.string.reminder_due_format, state.dueCount)
+        } else {
+            getString(R.string.reminder_title)
+        }
+        binding.tvReminderFallback.isVisible = !state.notificationsEnabled
+        binding.btnNotificationSettings.isVisible = !state.notificationsEnabled
+    }
+
+    /** Android 13+ 先解释再请求；同一次安装只弹一次解释框。 */
+    private fun askNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+
+        val granted = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.POST_NOTIFICATIONS,
+        ) == PackageManager.PERMISSION_GRANTED
+        if (granted) return
+
+        val prefs = requireContext().getSharedPreferences(
+            "reminder_prefs",
+            Context.MODE_PRIVATE,
+        )
+        if (prefs.getBoolean("notification_permission_prompted", false)) return
+        prefs.edit().putBoolean("notification_permission_prompted", true).apply()
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.notification_permission_title)
+            .setMessage(R.string.notification_permission_message)
+            .setNegativeButton(R.string.notification_permission_later, null)
+            .setPositiveButton(R.string.notification_permission_allow) { _, _ ->
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            .show()
+    }
+
+    /** 权限被拒后的降级入口：直接打开本应用的系统通知设置。 */
+    private fun openNotificationSettings() {
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+            }
+        } else {
+            Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:${requireContext().packageName}"),
+            )
+        }
+        startActivity(intent)
     }
 
     /**
