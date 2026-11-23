@@ -54,7 +54,8 @@ class ReminderViewModel(
             .onEach { words ->
                 val now = System.currentTimeMillis()
                 val due = words.count { word ->
-                    word.nextReviewTime != null && word.nextReviewTime <= now
+                    val nextReviewTime = word.nextReviewTime
+                    nextReviewTime != null && nextReviewTime <= now
                 }
                 _uiState.update {
                     it.copy(

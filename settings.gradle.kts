@@ -22,3 +22,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "WordMemoryB4"
 include(":app")
+include(":core_data")
+include(":data_board_module")

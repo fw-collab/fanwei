@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="board_bg">#F5F7FC</color>
+    <color name="board_surface">#FFFFFF</color>
+    <color name="board_blue">#1F5FBF</color>
+    <color name="board_blue_soft">#E8F0FF</color>
+    <color name="board_orange">#F28A2E</color>
+    <color name="board_orange_soft">#FFF2E2</color>
+    <color name="board_text">#172033</color>
+    <color name="board_text_secondary">#5F6B7A</color>
+    <color name="board_divider">#E3E8F0</color>
+</resources>

@@ -66,52 +66,54 @@
 
 ### 4.1 模块划分
 
-| 模块 | 类型 | 职责 | 可独立安装 |
+| 模块 | 类型 | 职责 | 启动方式 |
 |---|---|---|---|
-| `:app` | `com.android.application` | B4 全部业务；Room 数据库；只读 `WordBoardProvider` | 是 |
-| `:data_board_module` | `com.android.library` | P2 看板 UI、ViewModel、Repository、图表；不含 Room | 否 |
-| `:board_app` | `com.android.application` | 伴生端薄宿主：独立 `applicationId`、Launcher、主题与签名配置 | 是 |
+| `:app` | `com.android.application` | B4 全部业务；依赖 `:core_data` 和 `:data_board_module` | 主 Launcher |
+| `:core_data` | `com.android.library` | Room 实体、DAO、`AppDatabase`，主 App 与看板共用 | 不单独启动 |
+| `:data_board_module` | `com.android.library` | `BoardMainActivity`、看板 UI、`BoardViewModel`、`BoardRepository` | **第二个 Launcher 入口** |
 
-> **关键说明：** Android Library 不能单独安装，也没有可被桌面启动的 APK。因此“`data_board_module` 为 Android Library”与“伴生模块独立可启动”要同时成立，必须增加一个极薄的 `:board_app` 宿主。业务代码和页面放在 Library，宿主只负责打包与启动。
+> **关键说明：** `:data_board_module` 是独立 Gradle Module，但以 Android Library 形式被主 App 依赖并合入同一个 APK。`BoardMainActivity` 在合并后的 Manifest 中声明了 `MAIN` / `LAUNCHER`，因此桌面会显示“数据看板”入口，可以单独点击启动。两个 Activity 同 APK、同 UID、同进程，直接共享 `word_memory.db`。
 
 ### 4.2 数据流
 
 ```text
-:app（主 App APK，com.example.wordmemory）
-  B4 UI → ViewModel → Repository → Room（word_memory.db，唯一数据源）
-                                      │
-                                      ▼
-                            WordBoardProvider（只读 ContentProvider）
-                                      ▲
-                                      │ ContentResolver 查询
-:board_app（伴生 APK，com.example.wordmemory.board） → :data_board_module（看板 UI + Repository）
+:app APK（com.example.wordmemory，同一进程）
+  ├─ MainActivity             B4 单词记忆
+  └─ BoardMainActivity        P2 数据看板（独立 Launcher）
+          │
+          ▼
+     BoardViewModel → BoardRepository
+          │
+          ▼
+     :core_data AppDatabase（Room，word_memory.db）
+          ▲
+          │
+     B4 Repository / DAO
 ```
 
-### 4.3 “读取主 App Room 数据库”的实现口径
+### 4.3 数据库访问方式
 
-Android 应用沙箱不允许另一个 APK 直接打开 `/data/data/com.example.wordmemory/databases/word_memory.db`。本项目采用 **主 App 进程内只读 Provider** 的方式：
-
-1. Room 仍是唯一数据源，所有学习数据只由主 App 写入。
-2. 主 App 在自身进程内用 Room DAO 查询，并通过 `WordBoardProvider` 暴露为只读 URI。
-3. `:data_board_module` 的 Repository 通过 `ContentResolver` 查询，不依赖 Room，也不接触数据库文件。
-4. Provider 使用 `signature` 级自定义权限，仅允许同一签名证书的伴生端读取；不开放写权限。
-5. 主 App 需已安装并至少启动过一次以完成建库；被系统强制停止时，Provider 需等主 App 进程恢复后才可查询。
-
-**明确不采用的方案：** 直接打开主 App 数据库文件、`sharedUserId`、把数据库放到外部存储、在伴生端另建一份 Room 副本。这些方案分别存在沙箱限制、弃用/安全、并发损坏和数据不一致问题。
+1. Room 仍是唯一数据源，数据库名 `word_memory.db`，由 `:core_data` 统一提供。
+2. 主 App 和看板都依赖 `:core_data`，使用同一个 `AppDatabase` 类和同一个数据库文件。
+3. 看板与主 App 同进程，直接调用 DAO 做只读统计，不复制数据库、不通过 ContentProvider。
+4. 这样“独立 Module + 独立 Launcher”和“同进程共享数据库”可以同时成立。
+5. 如果未来要求看板作为完全独立的 APK 安装，则需要改为 ContentProvider 或 sharedUserId 方案，并处理跨进程/跨 UID 的权限问题；当前里程碑按同进程实现。
 
 ## 5. 仓库结构
 
 ```text
 danci/
-├─ app/                     # B4 主 App（已创建，可运行）
-├─ data_board_module/       # P2 Android Library（M3 创建）
-├─ board_app/               # P2 独立宿主（M3 创建）
+├─ app/                     # B4 主 App（含 P2 独立 Launcher 入口）
+├─ core_data/               # Room 实体、DAO、AppDatabase（共享数据层）
+├─ data_board_module/       # P2 Android Library：BoardMainActivity + 看板 UI
 ├─ docs/
 │  ├─ 01-选题报审.md
 │  ├─ 02-AndroidStudio项目初始化.md
 │  ├─ 03-数据共享契约.md
-│  └─ 04-数据模型设计.md
-├─ app/schemas/             # Room 导出的数据库 schema
+│  ├─ 04-数据模型设计.md
+│  ├─ 05-艾宾浩斯算法.md
+│  └─ 06-通知与定时提醒.md
+├─ core_data/schemas/       # Room 导出的数据库 schema
 ├─ gradle/wrapper/          # Gradle Wrapper
 ├─ gradlew
 ├─ gradlew.bat
@@ -122,7 +124,7 @@ danci/
 └─ README.md
 ```
 
-当前 B4 主 App 已创建并可运行；M2 数据层、M3 底部导航、M4 单词本 CRUD、M5 艾宾浩斯算法、M6 复习卡片流程、M7 错题本、M7.5 通知与 WorkManager 提醒已完成；P2 的两个模块待后续按文档创建。
+当前 B4 主 App 已创建并可运行；M2 数据层、M3 底部导航、M4 单词本 CRUD、M5 艾宾浩斯算法、M6 复习卡片流程、M7 错题本、M7.5 通知与 WorkManager 提醒、M8 数据看板骨架已完成。
 
 ### 运行 B4 主 App
 
@@ -130,6 +132,14 @@ danci/
 2. 等待 Gradle Sync 完成。
 3. 运行配置选择 `app`。
 4. 设备选择 `Pixel 5 (emulator-5554)`，点击 Run。
+
+### 单独启动 P2 数据看板
+
+桌面会出现第二个入口“数据看板”，直接点击即可；也可以在 Android Studio 中运行 `app` 后通过以下命令启动：
+
+```bash
+adb shell am start -n com.example.wordmemory/com.example.wordmemory.board.BoardMainActivity
+```
 
 ## 6. 里程碑
 
@@ -143,7 +153,7 @@ danci/
 | M6 | 复习卡片翻转、记住/忘记分支、事务更新 Word + ReviewRecord、答错写入 WrongRecord、复习完成空态 | 复习主流程联调完成 |
 | M7 | 错题本列表（按单词聚合错误次数/最近时间）、错题详情、移出错题本、列表→详情导航 | 错题展示管理完成 |
 | M7.5 | Android 13+ 通知权限、每日 WorkManager 提醒、NotificationChannel、权限关闭降级提示 | 后台提醒与降级方案完成 |
-| M8 | P2 看板 UI、图表、独立宿主；数据/设置与答辩材料 | 可演示的完整双端项目 |
+| M8 | P2 `data_board_module`、独立 Launcher Activity、共享 `core_data` Room、统计卡片/等级分布/图表占位 | 看板骨架与独立演示入口完成 |
 
 ## 7. 文档索引
 
@@ -153,3 +163,4 @@ danci/
 - [里程碑 2：数据模型设计](docs/04-数据模型设计.md)
 - [里程碑 5：艾宾浩斯遗忘曲线算法](docs/05-艾宾浩斯算法.md)
 - [M7.5：通知权限与 WorkManager 复习提醒](docs/06-通知与定时提醒.md)
+- [M8：P2 数据看板模块](docs/07-数据看板模块.md)

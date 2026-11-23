@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.wordmemory.data.local.entity.Word
+import com.example.wordmemory.data.local.model.MemoryLevelCount
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -73,4 +74,12 @@ interface WordDao {
     /** 按拼写查询单词，用于判重。 */
     @Query("SELECT * FROM words WHERE spelling = :spelling LIMIT 1")
     suspend fun findBySpelling(spelling: String): Word?
+
+    /** 单词总数。 */
+    @Query("SELECT COUNT(*) FROM words")
+    suspend fun countAll(): Int
+
+    /** 各记忆等级的单词数量，供看板统计。 */
+    @Query("SELECT memory_level AS level, COUNT(*) AS count FROM words GROUP BY memory_level ORDER BY memory_level")
+    suspend fun countByMemoryLevel(): List<MemoryLevelCount>
 }

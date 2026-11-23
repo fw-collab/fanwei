@@ -73,4 +73,8 @@ interface WrongRecordDao {
     /** 把某个单词从错题本移除；返回删除的错题明细条数。 */
     @Query("DELETE FROM wrong_records WHERE word_id = :wordId")
     suspend fun deleteByWordId(wordId: Long): Int
+
+    /** 错题总条数，供数据看板使用。 */
+    @Query("SELECT COUNT(*) FROM wrong_records")
+    suspend fun countAll(): Int
 }

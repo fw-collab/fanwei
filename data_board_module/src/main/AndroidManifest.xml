@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name=".BoardMainActivity"
+            android:exported="true"
+            android:icon="@drawable/ic_board"
+            android:label="@string/board_title"
+            android:launchMode="singleTop"
+            android:taskAffinity="com.example.wordmemory.board"
+            android:theme="@style/Theme.WordMemory.Board">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

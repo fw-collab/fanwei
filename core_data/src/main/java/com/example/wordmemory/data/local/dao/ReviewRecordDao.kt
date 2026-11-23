@@ -30,4 +30,19 @@ interface ReviewRecordDao {
     /** 查询某个单词的全部复习记录，按复习时间倒序。 */
     @Query("SELECT * FROM review_records WHERE word_id = :wordId ORDER BY reviewed_at DESC")
     fun observeByWord(wordId: Long): Flow<List<ReviewRecord>>
+
+    /** 指定时间区间内的复习次数，用于今日复习统计。 */
+    @Query(
+        "SELECT COUNT(*) FROM review_records " +
+            "WHERE reviewed_at >= :startInclusive AND reviewed_at < :endExclusive"
+    )
+    suspend fun countBetween(startInclusive: Long, endExclusive: Long): Int
+
+    /** 指定时间区间内答对的复习次数，用于计算正确率。 */
+    @Query(
+        "SELECT COUNT(*) FROM review_records " +
+            "WHERE reviewed_at >= :startInclusive AND reviewed_at < :endExclusive " +
+            "AND result = 1"
+    )
+    suspend fun countCorrectBetween(startInclusive: Long, endExclusive: Long): Int
 }

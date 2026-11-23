@@ -1,5 +1,7 @@
 # Android Studio 新建项目与模块配置步骤
 
+> **M8 实现说明：** 当前工程实际模块为 `:app`、`:core_data`、`:data_board_module`。看板以 Library 形式合入主 APK，并通过 `BoardMainActivity` 的第二 Launcher 独立启动；本文原 `:board_app` 宿主步骤保留为“独立 APK”备选，不反映当前代码。
+
 > 目标：在 `D:\danci` 生成 `:app`、`:data_board_module`、`:board_app` 三个模块的工程骨架。  
 > 本文只包含工程配置，不包含业务代码；业务实现从 M2 开始。
 

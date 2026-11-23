@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="board_title">数据看板</string>
+    <string name="board_eyebrow">DATA BOARD</string>
+    <string name="board_subtitle">主 App 学习数据总览 · 只读视图</string>
+    <string name="board_refresh">刷新</string>
+    <string name="board_loading">正在读取学习数据…</string>
+    <string name="board_empty_title">还没有学习数据</string>
+    <string name="board_empty_desc">先在单词记忆 App 中添加单词并完成复习，再回来看板。</string>
+    <string name="board_error_title">数据读取失败</string>
+    <string name="board_error_desc">请稍后重试，或确认主 App 数据库可用。</string>
+    <string name="board_retry">重新加载</string>
+    <string name="board_stat_total_words">总单词数</string>
+    <string name="board_stat_today_reviews">今日复习</string>
+    <string name="board_stat_accuracy">今日正确率</string>
+    <string name="board_stat_wrong">错题总数</string>
+    <string name="board_no_accuracy">—</string>
+    <string name="board_level_title">各记忆等级单词数</string>
+    <string name="board_level_format">Lv.%1$d</string>
+    <string name="board_level_count">%1$d 个</string>
+    <string name="board_chart_title">学习趋势</string>
+    <string name="board_chart_hint">图表位置预留：后续接入近 7/30 天趋势图</string>
+    <string name="board_readonly_hint">数据来自主 App 的 word_memory.db，本页只读</string>
+</resources>
