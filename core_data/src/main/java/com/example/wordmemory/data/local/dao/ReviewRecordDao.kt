@@ -27,6 +27,10 @@ interface ReviewRecordDao {
     @Query("SELECT * FROM review_records ORDER BY reviewed_at DESC")
     fun observeAll(): Flow<List<ReviewRecord>>
 
+    /** 一次性读取全部复习记录，供 CSV 导出。 */
+    @Query("SELECT * FROM review_records ORDER BY reviewed_at ASC")
+    suspend fun getAllOnce(): List<ReviewRecord>
+
     /** 查询某个单词的全部复习记录，按复习时间倒序。 */
     @Query("SELECT * FROM review_records WHERE word_id = :wordId ORDER BY reviewed_at DESC")
     fun observeByWord(wordId: Long): Flow<List<ReviewRecord>>

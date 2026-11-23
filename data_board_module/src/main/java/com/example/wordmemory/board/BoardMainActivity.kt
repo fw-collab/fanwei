@@ -1,7 +1,11 @@
 package com.example.wordmemory.board
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,6 +26,7 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -49,10 +54,16 @@ class BoardMainActivity : AppCompatActivity() {
 
         binding.btnRefresh.setOnClickListener { viewModel.refresh() }
         binding.btnRetry.setOnClickListener { viewModel.refresh() }
+        binding.btnExport.setOnClickListener { viewModel.exportCsv() }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state -> render(state) }
+                launch {
+                    viewModel.uiState.collect { state -> render(state) }
+                }
+                launch {
+                    viewModel.exportEvents.collect { event -> handleExportEvent(event) }
+                }
             }
         }
     }
@@ -70,6 +81,10 @@ class BoardMainActivity : AppCompatActivity() {
         binding.emptyContainer.isVisible = state.isEmpty
         binding.errorContainer.isVisible = !state.isLoading && state.errorMessage != null
         binding.btnRefresh.isEnabled = !state.isLoading
+        binding.btnExport.isEnabled = !state.isExporting
+        binding.btnExport.text = getString(
+            if (state.isExporting) R.string.board_exporting else R.string.board_export
+        )
 
         state.errorMessage?.let { binding.tvError.text = it }
 
@@ -208,6 +223,47 @@ class BoardMainActivity : AppCompatActivity() {
             R.color.board_orange,
             R.color.board_blue_light,
         ).map { ContextCompat.getColor(this, it) }
+    }
+
+    private fun handleExportEvent(event: CsvExportEvent) {
+        when (event) {
+            is CsvExportEvent.Success -> {
+                val message = getString(
+                    R.string.board_export_success,
+                    event.recordCount,
+                    event.location,
+                )
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.board_export_view) {
+                        openCsv(event.uri)
+                    }
+                    .show()
+            }
+
+            is CsvExportEvent.Failure -> {
+                Toast.makeText(
+                    this,
+                    getString(R.string.board_export_failed, event.message),
+                    Toast.LENGTH_LONG,
+                ).show()
+            }
+        }
+    }
+
+    /** 用系统 ACTION_VIEW 打开 CSV；没有可用阅读器时给出提示。 */
+    private fun openCsv(uri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "text/csv")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        try {
+            startActivity(Intent.createChooser(intent, getString(R.string.board_export_chooser)))
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, R.string.board_export_no_viewer, Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, R.string.board_export_no_viewer, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun renderLevels(state: BoardUiState) {

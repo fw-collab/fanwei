@@ -23,4 +23,11 @@
     <string name="board_bar_empty">近 7 天还没有复习记录</string>
     <string name="board_pie_empty">还没有单词可以统计</string>
     <string name="board_readonly_hint">数据来自主 App 的 word_memory.db，本页只读</string>
+    <string name="board_export">导出 CSV</string>
+    <string name="board_exporting">导出中…</string>
+    <string name="board_export_success">已导出 %1$d 条复习记录\n%2$s</string>
+    <string name="board_export_view">查看</string>
+    <string name="board_export_failed">导出失败：%1$s</string>
+    <string name="board_export_no_viewer">没有可打开 CSV 文件的应用</string>
+    <string name="board_export_chooser">打开 CSV</string>
 </resources>

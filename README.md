@@ -54,6 +54,7 @@
 | 算法 | 简化艾宾浩斯：5min–30d 共 9 级，答对升级、答错重置 |
 | 后台任务 | WorkManager 2.10.0，每日 20:00 查询待复习单词 |
 | 系统通知 | NotificationChannel + Android 13+ POST_NOTIFICATIONS 动态权限 |
+| 文件导出 | MediaStore.Downloads（Android 10+），CSV 复习记录导出 |
 | 图表 | MPAndroidChart 3.1.0（折线图/饼图/柱状图） |
 | 系统能力 | TextToSpeech、ContentProvider / ContentResolver、自定义 View、属性动画 |
 | 测试 | JUnit4、AndroidX Test、Espresso、Room 内存数据库 |
@@ -153,7 +154,7 @@ adb shell am start -n com.example.wordmemory/com.example.wordmemory.board.BoardM
 | M6 | 复习卡片翻转、记住/忘记分支、事务更新 Word + ReviewRecord、答错写入 WrongRecord、复习完成空态 | 复习主流程联调完成 |
 | M7 | 错题本列表（按单词聚合错误次数/最近时间）、错题详情、移出错题本、列表→详情导航 | 错题展示管理完成 |
 | M7.5 | Android 13+ 通知权限、每日 WorkManager 提醒、NotificationChannel、权限关闭降级提示 | 后台提醒与降级方案完成 |
-| M8 | P2 `data_board_module`、独立 Launcher、共享 `core_data` Room、MPAndroidChart 柱状图/饼图、图表空态 | 看板骨架与图表完成 |
+| M8 | P2 `data_board_module`、独立 Launcher、共享 `core_data` Room、MPAndroidChart 柱状图/饼图、CSV 导出 | 看板骨架、图表与文件导出完成 |
 
 ## 7. 文档索引
 

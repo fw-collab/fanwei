@@ -54,6 +54,21 @@
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnExport"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:minWidth="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/board_export"
+                    android:textColor="@color/board_orange"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/board_orange" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnRefresh"
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"

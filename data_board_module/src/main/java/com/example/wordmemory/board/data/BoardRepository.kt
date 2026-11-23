@@ -70,6 +70,19 @@ class BoardRepository(private val db: AppDatabase) {
         }
     }
 
+    /** 一次性读取全部复习记录，供 CSV 导出。 */
+    suspend fun getAllReviewRecords(): Result<List<ReviewRecord>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Result.success(reviewRecordDao.getAllOnce())
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
     /** 本地时区“今天 00:00”到“明天 00:00”。 */
     private fun todayRange(): Pair<Long, Long> {
         return dayStart(offsetDays = 0) to dayStart(offsetDays = 1)
