@@ -153,7 +153,7 @@ adb shell am start -n com.example.wordmemory/com.example.wordmemory.board.BoardM
 | M6 | 复习卡片翻转、记住/忘记分支、事务更新 Word + ReviewRecord、答错写入 WrongRecord、复习完成空态 | 复习主流程联调完成 |
 | M7 | 错题本列表（按单词聚合错误次数/最近时间）、错题详情、移出错题本、列表→详情导航 | 错题展示管理完成 |
 | M7.5 | Android 13+ 通知权限、每日 WorkManager 提醒、NotificationChannel、权限关闭降级提示 | 后台提醒与降级方案完成 |
-| M8 | P2 `data_board_module`、独立 Launcher Activity、共享 `core_data` Room、统计卡片/等级分布/图表占位 | 看板骨架与独立演示入口完成 |
+| M8 | P2 `data_board_module`、独立 Launcher、共享 `core_data` Room、MPAndroidChart 柱状图/饼图、图表空态 | 看板骨架与图表完成 |
 
 ## 7. 文档索引
 

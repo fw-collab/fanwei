@@ -18,7 +18,9 @@
     <string name="board_level_title">各记忆等级单词数</string>
     <string name="board_level_format">Lv.%1$d</string>
     <string name="board_level_count">%1$d 个</string>
-    <string name="board_chart_title">学习趋势</string>
-    <string name="board_chart_hint">图表位置预留：后续接入近 7/30 天趋势图</string>
+    <string name="board_bar_chart_title">近 7 天每日复习数量</string>
+    <string name="board_pie_chart_title">记忆等级分布</string>
+    <string name="board_bar_empty">近 7 天还没有复习记录</string>
+    <string name="board_pie_empty">还没有单词可以统计</string>
     <string name="board_readonly_hint">数据来自主 App 的 word_memory.db，本页只读</string>
 </resources>

@@ -31,6 +31,14 @@ interface ReviewRecordDao {
     @Query("SELECT * FROM review_records WHERE word_id = :wordId ORDER BY reviewed_at DESC")
     fun observeByWord(wordId: Long): Flow<List<ReviewRecord>>
 
+    /** 查询某个时间区间的复习记录，用于看板近 7 天趋势。 */
+    @Query(
+        "SELECT * FROM review_records " +
+            "WHERE reviewed_at >= :startInclusive AND reviewed_at < :endExclusive " +
+            "ORDER BY reviewed_at ASC"
+    )
+    suspend fun getBetween(startInclusive: Long, endExclusive: Long): List<ReviewRecord>
+
     /** 指定时间区间内的复习次数，用于今日复习统计。 */
     @Query(
         "SELECT COUNT(*) FROM review_records " +

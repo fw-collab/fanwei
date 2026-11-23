@@ -4,8 +4,12 @@
     <color name="board_surface">#FFFFFF</color>
     <color name="board_blue">#1F5FBF</color>
     <color name="board_blue_soft">#E8F0FF</color>
+    <color name="board_blue_light">#6E9AE0</color>
+    <color name="board_blue_dark">#174A99</color>
     <color name="board_orange">#F28A2E</color>
     <color name="board_orange_soft">#FFF2E2</color>
+    <color name="board_orange_light">#F6B26B</color>
+    <color name="board_orange_dark">#C96B16</color>
     <color name="board_text">#172033</color>
     <color name="board_text_secondary">#5F6B7A</color>
     <color name="board_divider">#E3E8F0</color>

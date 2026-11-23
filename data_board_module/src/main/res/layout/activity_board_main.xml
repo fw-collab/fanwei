@@ -286,26 +286,79 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/board_chart_title"
+                        android:text="@string/board_bar_chart_title"
                         android:textColor="@color/board_text"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <FrameLayout
-                        android:id="@+id/chartPlaceholder"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/bg_board_chart_placeholder">
+                        android:layout_height="220dp"
+                        android:layout_marginTop="6dp">
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/barChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
 
                         <TextView
+                            android:id="@+id/tvBarEmpty"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="@string/board_chart_hint"
-                            android:textColor="@color/board_blue"
-                            android:textSize="13sp" />
+                            android:text="@string/board_bar_empty"
+                            android:textColor="@color/board_text_secondary"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
+                    </FrameLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/board_surface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/board_divider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/board_pie_chart_title"
+                        android:textColor="@color/board_text"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp"
+                        android:layout_marginTop="6dp">
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/pieChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <TextView
+                            android:id="@+id/tvPieEmpty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@string/board_pie_empty"
+                            android:textColor="@color/board_text_secondary"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
                     </FrameLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

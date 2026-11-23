@@ -1,6 +1,7 @@
 package com.example.wordmemory.board.data
 
 import com.example.wordmemory.data.local.AppDatabase
+import com.example.wordmemory.data.local.entity.ReviewRecord
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,6 +16,8 @@ data class BoardDashboard(
     val accuracy: Double?,
     val wrongTotal: Int,
     val levelCounts: Map<Int, Int>,
+    /** 近 7 天（含今天）的复习明细，由 ViewModel 聚合成 BarEntry。 */
+    val reviewsLast7Days: List<ReviewRecord>,
 )
 
 /**
@@ -40,6 +43,10 @@ class BoardRepository(private val db: AppDatabase) {
                 val levelCounts = wordDao.countByMemoryLevel()
                     .associate { it.level to it.count }
                     .toSortedMap()
+                val recentReviews = reviewRecordDao.getBetween(
+                    dayStart(offsetDays = -6),
+                    tomorrowStart,
+                )
 
                 Result.success(
                     BoardDashboard(
@@ -52,6 +59,7 @@ class BoardRepository(private val db: AppDatabase) {
                         },
                         wrongTotal = wrongTotal,
                         levelCounts = levelCounts,
+                        reviewsLast7Days = recentReviews,
                     )
                 )
             } catch (e: CancellationException) {
@@ -64,15 +72,17 @@ class BoardRepository(private val db: AppDatabase) {
 
     /** 本地时区“今天 00:00”到“明天 00:00”。 */
     private fun todayRange(): Pair<Long, Long> {
-        val start = Calendar.getInstance().apply {
+        return dayStart(offsetDays = 0) to dayStart(offsetDays = 1)
+    }
+
+    /** 本地时区某一天的 00:00，offsetDays = -6 表示 6 天前。 */
+    private fun dayStart(offsetDays: Int): Long {
+        return Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-        }
-        val end = (start.clone() as Calendar).apply {
-            add(Calendar.DAY_OF_YEAR, 1)
-        }
-        return start.timeInMillis to end.timeInMillis
+            add(Calendar.DAY_OF_YEAR, offsetDays)
+        }.timeInMillis
     }
 }
