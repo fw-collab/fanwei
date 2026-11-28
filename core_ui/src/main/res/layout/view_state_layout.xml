@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/stateOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/core_ui_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:id="@+id/loadingState"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:indeterminateTint="@color/core_ui_blue" />
+
+        <TextView
+            android:id="@+id/tvLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/core_ui_item_gap"
+            android:text="@string/core_ui_loading"
+            android:textAppearance="@style/TextAppearance.CoreUi.Body"
+            android:textColor="@color/core_ui_text_secondary" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/emptyState"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/core_ui_page_padding"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivEmpty"
+            android:layout_width="@dimen/core_ui_state_icon"
+            android:layout_height="@dimen/core_ui_state_icon"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_state_empty" />
+
+        <TextView
+            android:id="@+id/tvEmptyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/core_ui_item_gap"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.CoreUi.SectionTitle"
+            tools:text="暂无数据" />
+
+        <TextView
+            android:id="@+id/tvEmptyMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.CoreUi.Body"
+            android:textColor="@color/core_ui_text_secondary"
+            tools:text="添加内容后会显示在这里。" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEmptyAction"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/core_ui_state_button_height"
+            android:layout_marginTop="14dp"
+            android:textColor="@color/core_ui_blue"
+            android:visibility="gone"
+            app:backgroundTint="@color/core_ui_blue_soft"
+            app:cornerRadius="14dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/errorState"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/core_ui_page_padding"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivError"
+            android:layout_width="@dimen/core_ui_state_icon"
+            android:layout_height="@dimen/core_ui_state_icon"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_state_error" />
+
+        <TextView
+            android:id="@+id/tvErrorTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/core_ui_item_gap"
+            android:text="@string/core_ui_error_title"
+            android:textAppearance="@style/TextAppearance.CoreUi.SectionTitle" />
+
+        <TextView
+            android:id="@+id/tvErrorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.CoreUi.Body"
+            android:textColor="@color/core_ui_text_secondary"
+            tools:text="请检查数据库后重试。" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/core_ui_state_button_height"
+            android:layout_marginTop="14dp"
+            android:text="@string/core_ui_retry"
+            android:textColor="@color/core_ui_surface"
+            app:backgroundTint="@color/core_ui_blue"
+            app:cornerRadius="14dp" />
+    </LinearLayout>
+</FrameLayout>

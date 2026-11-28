@@ -58,6 +58,7 @@ ksp {
 
 dependencies {
     implementation(project(":core_data"))
+    implementation(project(":core_ui"))
     // 把 P2 看板作为独立 Launcher Activity 合入同一个 APK，保证同进程访问 Room
     implementation(project(":data_board_module"))
 

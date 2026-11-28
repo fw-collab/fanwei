@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="core_ui_background">#F5F7FC</color>
+    <color name="core_ui_surface">#FFFFFF</color>
+    <color name="core_ui_blue">#1F5FBF</color>
+    <color name="core_ui_blue_soft">#E8F0FF</color>
+    <color name="core_ui_orange">#F28A2E</color>
+    <color name="core_ui_orange_soft">#FFF2E2</color>
+    <color name="core_ui_text">#172033</color>
+    <color name="core_ui_text_secondary">#5F6B7A</color>
+    <color name="core_ui_divider">#E3E8F0</color>
+</resources>

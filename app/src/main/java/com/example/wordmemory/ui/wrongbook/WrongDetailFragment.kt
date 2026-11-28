@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -17,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.wordmemory.R
+import com.example.wordmemory.core.ui.ToastUtils
 import com.example.wordmemory.databinding.FragmentWrongDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CancellationException
@@ -75,7 +74,7 @@ class WrongDetailFragment : Fragment() {
                 }
                 launch {
                     viewModel.events.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                        ToastUtils.show(requireContext(), message)
                     }
                 }
             }
@@ -90,12 +89,31 @@ class WrongDetailFragment : Fragment() {
         }
 
         val item = state.item
-        binding.contentContainer.isVisible = item != null
-        binding.loadingContainer.isVisible = state.isLoading && item == null
-        binding.emptyContainer.isVisible = !state.isLoading && item == null
+        when {
+            state.errorMessage != null -> {
+                binding.stateLayout.showError(state.errorMessage) {
+                    viewModel.retry()
+                }
+            }
 
-        binding.btnRemove.isEnabled = item != null && !state.isRemoving
-        binding.btnShare.isEnabled = item != null && !isSharing
+            state.isLoading && item == null -> {
+                binding.stateLayout.showLoading()
+            }
+
+            item == null -> {
+                binding.stateLayout.showEmpty(
+                    title = getString(R.string.wrong_not_found),
+                    message = getString(R.string.wrong_not_found_desc),
+                )
+            }
+
+            else -> {
+                binding.stateLayout.showContent()
+            }
+        }
+
+        binding.btnRemove.isEnabled = item != null && !state.isRemoving && state.errorMessage == null
+        binding.btnShare.isEnabled = item != null && !isSharing && state.errorMessage == null
         binding.btnShare.text = getString(
             if (isSharing) R.string.wrong_sharing else R.string.wrong_share
         )
@@ -137,11 +155,7 @@ class WrongDetailFragment : Fragment() {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                Toast.makeText(
-                    appContext,
-                    R.string.wrong_share_failed,
-                    Toast.LENGTH_SHORT,
-                ).show()
+                ToastUtils.show(appContext, R.string.wrong_share_failed)
             } finally {
                 isSharing = false
                 if (_binding != null) {
@@ -164,17 +178,9 @@ class WrongDetailFragment : Fragment() {
                 Intent.createChooser(sendIntent, getString(R.string.wrong_share_chooser))
             )
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(
-                requireContext(),
-                R.string.wrong_share_no_app,
-                Toast.LENGTH_SHORT,
-            ).show()
+            ToastUtils.show(requireContext(), R.string.wrong_share_no_app)
         } catch (e: Exception) {
-            Toast.makeText(
-                requireContext(),
-                R.string.wrong_share_failed,
-                Toast.LENGTH_SHORT,
-            ).show()
+            ToastUtils.show(requireContext(), R.string.wrong_share_failed)
         }
     }
 

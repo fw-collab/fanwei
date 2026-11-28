@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.wordmemory.R
+import com.example.wordmemory.core.ui.ToastUtils
 import com.example.wordmemory.databinding.FragmentReviewBinding
 import kotlinx.coroutines.launch
 
@@ -63,7 +63,7 @@ class ReviewFragment : Fragment() {
                 }
                 launch {
                     viewModel.events.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                        ToastUtils.show(requireContext(), message)
                     }
                 }
             }
@@ -81,11 +81,31 @@ class ReviewFragment : Fragment() {
         isSubmitting = state.isSubmitting
 
         binding.tvRemaining.text = getString(R.string.review_remaining, state.queue.size)
-        binding.contentContainer.isVisible = word != null
-        binding.loadingContainer.isVisible = state.isLoading && word == null
-        binding.emptyContainer.isVisible = !state.isLoading && word == null
-        binding.btnRemember.isEnabled = word != null && !state.isSubmitting
-        binding.btnForget.isEnabled = word != null && !state.isSubmitting
+        binding.btnRemember.isEnabled = word != null && !state.isSubmitting && state.errorMessage == null
+        binding.btnForget.isEnabled = word != null && !state.isSubmitting && state.errorMessage == null
+
+        when {
+            state.errorMessage != null -> {
+                binding.stateLayout.showError(state.errorMessage) {
+                    viewModel.refreshQueue()
+                }
+            }
+
+            state.isLoading && word == null -> {
+                binding.stateLayout.showLoading()
+            }
+
+            word == null -> {
+                binding.stateLayout.showEmpty(
+                    title = getString(R.string.review_complete_title),
+                    message = getString(R.string.review_complete_desc),
+                )
+            }
+
+            else -> {
+                binding.stateLayout.showContent()
+            }
+        }
 
         if (word == null) {
             currentWordId = null

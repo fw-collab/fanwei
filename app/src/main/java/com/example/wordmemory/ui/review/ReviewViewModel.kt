@@ -8,6 +8,7 @@ import com.example.wordmemory.data.local.AppDatabase
 import com.example.wordmemory.data.local.entity.Word
 import com.example.wordmemory.data.repository.ReviewRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 data class ReviewUiState(
     val isLoading: Boolean = true,
     val isSubmitting: Boolean = false,
+    val errorMessage: String? = null,
     val queue: List<Word> = emptyList(),
     val reviewedCount: Int = 0,
     val rememberedCount: Int = 0,
@@ -47,6 +49,7 @@ class ReviewViewModel(
      * 这样复习过程中新到期的单词也能被纳入。
      */
     private val queryTime = MutableStateFlow(System.currentTimeMillis())
+    private var queueJob: Job? = null
 
     init {
         observeQueue()
@@ -54,19 +57,25 @@ class ReviewViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun observeQueue() {
-        queryTime
+        queueJob?.cancel()
+        queueJob = queryTime
             .flatMapLatest { now -> repository.observeDueWords(now) }
             .onEach { words ->
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        errorMessage = null,
                         queue = words,
                     )
                 }
             }
             .catch { throwable ->
-                _uiState.update { it.copy(isLoading = false) }
-                _events.emit("复习队列加载失败：${throwable.localizedMessage ?: "未知错误"}")
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = "复习队列加载失败：${throwable.localizedMessage ?: "未知错误"}",
+                    )
+                }
             }
             .launchIn(viewModelScope)
     }
@@ -109,9 +118,14 @@ class ReviewViewModel(
         }
     }
 
-    /** 页面重新可见时手动刷新一次队列。 */
+    /** 页面重新可见时手动刷新一次队列；错误态下重新订阅 Flow。 */
     fun refreshQueue() {
-        queryTime.value = System.currentTimeMillis()
+        if (_uiState.value.errorMessage != null) {
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            observeQueue()
+        } else {
+            queryTime.value = System.currentTimeMillis()
+        }
     }
 
     companion object {

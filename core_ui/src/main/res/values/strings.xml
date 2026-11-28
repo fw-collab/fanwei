@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_ui_loading">正在加载…</string>
+    <string name="core_ui_error_title">加载失败</string>
+    <string name="core_ui_retry">重新加载</string>
+
+    <style name="TextAppearance.CoreUi.PageTitle" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/core_ui_text</item>
+    </style>
+
+    <style name="TextAppearance.CoreUi.PageSubtitle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/core_ui_text_secondary</item>
+    </style>
+
+    <style name="TextAppearance.CoreUi.SectionTitle" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/core_ui_text</item>
+    </style>
+
+    <style name="TextAppearance.CoreUi.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/core_ui_text</item>
+    </style>
+
+    <style name="TextAppearance.CoreUi.Caption" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/core_ui_text_secondary</item>
+    </style>
+</resources>

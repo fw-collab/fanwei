@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -15,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.wordmemory.board.databinding.ActivityBoardMainBinding
 import com.example.wordmemory.board.databinding.ItemBoardLevelBinding
+import com.example.wordmemory.core.ui.ToastUtils
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
@@ -53,7 +53,6 @@ class BoardMainActivity : AppCompatActivity() {
         configurePieChart(binding.pieChart)
 
         binding.btnRefresh.setOnClickListener { viewModel.refresh() }
-        binding.btnRetry.setOnClickListener { viewModel.refresh() }
         binding.btnExport.setOnClickListener { viewModel.exportCsv() }
 
         lifecycleScope.launch {
@@ -75,18 +74,34 @@ class BoardMainActivity : AppCompatActivity() {
     }
 
     private fun render(state: BoardUiState) {
-        binding.loadingContainer.isVisible = state.isLoading
-        binding.contentContainer.isVisible =
-            !state.isLoading && state.errorMessage == null && !state.isEmpty
-        binding.emptyContainer.isVisible = state.isEmpty
-        binding.errorContainer.isVisible = !state.isLoading && state.errorMessage != null
+        when {
+            state.isLoading -> {
+                binding.stateLayout.showLoading()
+            }
+
+            state.errorMessage != null -> {
+                binding.stateLayout.showError(state.errorMessage) {
+                    viewModel.refresh()
+                }
+            }
+
+            state.isEmpty -> {
+                binding.stateLayout.showEmpty(
+                    title = getString(R.string.board_empty_title),
+                    message = getString(R.string.board_empty_desc),
+                )
+            }
+
+            else -> {
+                binding.stateLayout.showContent()
+            }
+        }
+
         binding.btnRefresh.isEnabled = !state.isLoading
         binding.btnExport.isEnabled = !state.isExporting
         binding.btnExport.text = getString(
             if (state.isExporting) R.string.board_exporting else R.string.board_export
         )
-
-        state.errorMessage?.let { binding.tvError.text = it }
 
         if (state.isLoading || state.errorMessage != null || state.isEmpty) return
 
@@ -233,7 +248,7 @@ class BoardMainActivity : AppCompatActivity() {
                     event.recordCount,
                     event.location,
                 )
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+                ToastUtils.show(this, message)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
                     .setAction(R.string.board_export_view) {
                         openCsv(event.uri)
@@ -242,11 +257,10 @@ class BoardMainActivity : AppCompatActivity() {
             }
 
             is CsvExportEvent.Failure -> {
-                Toast.makeText(
+                ToastUtils.show(
                     this,
                     getString(R.string.board_export_failed, event.message),
-                    Toast.LENGTH_LONG,
-                ).show()
+                )
             }
         }
     }
@@ -260,9 +274,9 @@ class BoardMainActivity : AppCompatActivity() {
         try {
             startActivity(Intent.createChooser(intent, getString(R.string.board_export_chooser)))
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, R.string.board_export_no_viewer, Toast.LENGTH_SHORT).show()
+            ToastUtils.show(this, R.string.board_export_no_viewer)
         } catch (e: Exception) {
-            Toast.makeText(this, R.string.board_export_no_viewer, Toast.LENGTH_SHORT).show()
+            ToastUtils.show(this, R.string.board_export_no_viewer)
         }
     }
 

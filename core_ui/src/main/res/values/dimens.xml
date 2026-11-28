@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="core_ui_page_padding">24dp</dimen>
+    <dimen name="core_ui_page_padding_bottom">12dp</dimen>
+    <dimen name="core_ui_section_gap">16dp</dimen>
+    <dimen name="core_ui_item_gap">10dp</dimen>
+    <dimen name="core_ui_card_radius">20dp</dimen>
+    <dimen name="core_ui_state_icon">48dp</dimen>
+    <dimen name="core_ui_state_button_height">44dp</dimen>
+</resources>

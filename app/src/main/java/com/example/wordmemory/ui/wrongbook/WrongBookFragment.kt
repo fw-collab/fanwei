@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -15,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wordmemory.R
+import com.example.wordmemory.core.ui.ToastUtils
 import com.example.wordmemory.databinding.FragmentWrongBookBinding
 import kotlinx.coroutines.launch
 
@@ -62,7 +61,7 @@ class WrongBookFragment : Fragment() {
                 }
                 launch {
                     viewModel.events.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                        ToastUtils.show(requireContext(), message)
                     }
                 }
             }
@@ -73,10 +72,28 @@ class WrongBookFragment : Fragment() {
         adapter.submitList(state.items)
         binding.tvCount.text = getString(R.string.wrong_book_count, state.items.size)
 
-        val hasItems = state.items.isNotEmpty()
-        binding.wrongRecycler.isVisible = hasItems
-        binding.loadingContainer.isVisible = state.isLoading && !hasItems
-        binding.emptyContainer.isVisible = !state.isLoading && !hasItems
+        when {
+            state.errorMessage != null -> {
+                binding.stateLayout.showError(state.errorMessage) {
+                    viewModel.retry()
+                }
+            }
+
+            state.isLoading && state.items.isEmpty() -> {
+                binding.stateLayout.showLoading()
+            }
+
+            state.items.isEmpty() -> {
+                binding.stateLayout.showEmpty(
+                    title = getString(R.string.wrong_empty_title),
+                    message = getString(R.string.wrong_empty_desc),
+                )
+            }
+
+            else -> {
+                binding.stateLayout.showContent()
+            }
+        }
     }
 
     override fun onDestroyView() {

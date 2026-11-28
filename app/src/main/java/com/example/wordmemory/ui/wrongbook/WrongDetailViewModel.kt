@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.wordmemory.data.local.AppDatabase
 import com.example.wordmemory.data.local.model.WrongWordItem
 import com.example.wordmemory.data.repository.WrongBookRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 
 data class WrongDetailUiState(
     val isLoading: Boolean = true,
+    val errorMessage: String? = null,
     val item: WrongWordItem? = null,
     val isRemoving: Boolean = false,
     val removed: Boolean = false,
@@ -37,21 +39,38 @@ class WrongDetailViewModel(
     private val _events = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val events: SharedFlow<String> = _events.asSharedFlow()
 
+    private var detailJob: Job? = null
+
     init {
-        repository.observeWrongWord(wordId)
+        observeWrongWord()
+    }
+
+    private fun observeWrongWord() {
+        detailJob?.cancel()
+        detailJob = repository.observeWrongWord(wordId)
             .onEach { item ->
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        errorMessage = null,
                         item = item,
                     )
                 }
             }
             .catch { throwable ->
-                _uiState.update { it.copy(isLoading = false) }
-                _events.emit("错题详情加载失败：${throwable.localizedMessage ?: "未知错误"}")
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = "错题详情加载失败：${throwable.localizedMessage ?: "未知错误"}",
+                    )
+                }
             }
             .launchIn(viewModelScope)
+    }
+
+    fun retry() {
+        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+        observeWrongWord()
     }
 
     fun removeFromWrongBook() {

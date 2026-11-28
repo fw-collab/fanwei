@@ -2,8 +2,8 @@ package com.example.wordmemory
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.wordmemory.core.ui.ToastUtils
 import com.example.wordmemory.databinding.ActivityStudyBinding
 
 class StudyActivity : AppCompatActivity() {
@@ -52,7 +52,7 @@ class StudyActivity : AppCompatActivity() {
         WordRepository.setLearned(this, words[index].spelling, learned)
         index++
         if (index >= words.size) {
-            Toast.makeText(this, R.string.round_finished, Toast.LENGTH_SHORT).show()
+            ToastUtils.show(this, R.string.round_finished)
             finish()
         } else {
             showCurrent()

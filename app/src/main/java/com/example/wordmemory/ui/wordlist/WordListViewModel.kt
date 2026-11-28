@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.wordmemory.data.local.AppDatabase
 import com.example.wordmemory.data.local.entity.Word
 import com.example.wordmemory.data.repository.WordRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 data class WordListUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
+    val errorMessage: String? = null,
     val words: List<Word> = emptyList(),
 )
 
@@ -38,30 +40,44 @@ class WordListViewModel(
     private val _events = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val events: SharedFlow<String> = _events.asSharedFlow()
 
+    private var wordsJob: Job? = null
+
     init {
         observeWords()
     }
 
     private fun observeWords() {
-        repository.observeWords()
+        // 重试时先取消旧订阅，防止页面反复重试产生多个 Flow collector
+        wordsJob?.cancel()
+        wordsJob = repository.observeWords()
             .onEach { words ->
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        errorMessage = null,
                         words = words,
                     )
                 }
             }
             .catch { throwable ->
-                _uiState.update { it.copy(isLoading = false) }
-                _events.emit(friendlyMessage(throwable))
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = friendlyMessage(throwable),
+                    )
+                }
             }
             .launchIn(viewModelScope)
     }
 
+    /** 错误态重试：重新订阅数据库 Flow。 */
+    fun retry() {
+        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+        observeWords()
+    }
+
     /** 下拉刷新：重新读一次数据库快照，Flow 仍会继续监听后续变化。 */
-    fun refresh() {
-        if (_uiState.value.isRefreshing) return
+    fun refresh() {        if (_uiState.value.isRefreshing) return
         _uiState.update { it.copy(isRefreshing = true) }
 
         viewModelScope.launch {
@@ -71,13 +87,19 @@ class WordListViewModel(
                         it.copy(
                             isLoading = false,
                             isRefreshing = false,
+                            errorMessage = null,
                             words = words,
                         )
                     }
                 }
                 .onFailure { throwable ->
-                    _uiState.update { it.copy(isRefreshing = false) }
-                    _events.emit(friendlyMessage(throwable))
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isRefreshing = false,
+                            errorMessage = friendlyMessage(throwable),
+                        )
+                    }
                 }
         }
     }

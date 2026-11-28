@@ -27,7 +27,7 @@
 | B4-06 | 学习记录与统计 | 每日新学/复习数量、正确率、连续天数；按日查看历史记录 |
 | B4-07 | 设置与数据管理 | 每日目标、TTS 开关、主题模式、学习数据重置、关于页面 |
 
-> 当前已实现：Room 单词本列表、下拉刷新、新增/编辑/删除、加载态和空态；复习卡片翻转、记住/忘记分支和复习完成空态；错题本列表、详情、移出错题本和错题卡片分享；通知权限申请、每日 WorkManager 复习提醒和权限关闭降级提示。数据、设置两个 Tab 仍为页面空壳。
+> 当前已实现：Room 单词本列表、下拉刷新、新增/编辑/删除、加载态和空态；复习卡片翻转、记住/忘记分支和复习完成空态；错题本列表、详情、移出错题本和错题卡片分享；通知权限申请、每日 WorkManager 复习提醒和权限关闭降级提示；所有主页面及看板统一接入 StateLayout 四态。数据、设置两个 Tab 仍为页面空壳。
 
 ### 2.2 伴生端：P2 数据看板
 
@@ -72,6 +72,7 @@
 |---|---|---|---|
 | `:app` | `com.android.application` | B4 全部业务；依赖 `:core_data` 和 `:data_board_module` | 主 Launcher |
 | `:core_data` | `com.android.library` | Room 实体、DAO、`AppDatabase`，主 App 与看板共用 | 不单独启动 |
+| `:core_ui` | `com.android.library` | StateLayout、ToastUtils、统一字体/间距/状态样式 | 不单独启动 |
 | `:data_board_module` | `com.android.library` | `BoardMainActivity`、看板 UI、`BoardViewModel`、`BoardRepository` | **第二个 Launcher 入口** |
 
 > **关键说明：** `:data_board_module` 是独立 Gradle Module，但以 Android Library 形式被主 App 依赖并合入同一个 APK。`BoardMainActivity` 在合并后的 Manifest 中声明了 `MAIN` / `LAUNCHER`，因此桌面会显示“数据看板”入口，可以单独点击启动。两个 Activity 同 APK、同 UID、同进程，直接共享 `word_memory.db`。
@@ -107,6 +108,7 @@
 danci/
 ├─ app/                     # B4 主 App（含 P2 独立 Launcher 入口）
 ├─ core_data/               # Room 实体、DAO、AppDatabase（共享数据层）
+├─ core_ui/                 # StateLayout、ToastUtils、统一 UI 规范
 ├─ data_board_module/       # P2 Android Library：BoardMainActivity + 看板 UI
 ├─ docs/
 │  ├─ 01-选题报审.md
@@ -126,7 +128,7 @@ danci/
 └─ README.md
 ```
 
-当前 B4 主 App 已创建并可运行；M2 数据层、M3 底部导航、M4 单词本 CRUD、M5 艾宾浩斯算法、M6 复习卡片流程、M7 错题本、M7.5 通知与 WorkManager 提醒、M8 数据看板骨架已完成。
+当前 B4 主 App 已创建并可运行；M2 数据层、M3 底部导航、M4 单词本 CRUD、M5 艾宾浩斯算法、M6 复习卡片流程、M7 错题本、M7.5 通知与 WorkManager 提醒、M8 数据看板/图表/CSV、自选错题卡片分享、全局 StateLayout 已完成。
 
 ### 运行 B4 主 App
 
@@ -157,6 +159,7 @@ adb shell am start -n com.example.wordmemory/com.example.wordmemory.board.BoardM
 | M7.5 | Android 13+ 通知权限、每日 WorkManager 提醒、NotificationChannel、权限关闭降级提示 | 后台提醒与降级方案完成 |
 | M8 | P2 `data_board_module`、独立 Launcher、共享 `core_data` Room、MPAndroidChart 柱状图/饼图、CSV 导出 | 看板骨架、图表与文件导出完成 |
 | 自选 | 错题卡片 Bitmap 生成、FileProvider、系统分享 | 错题图片卡片分享完成 |
+| 全局 | StateLayout 四态、统一 Toast/字体/间距、错误重试、ViewModel 生命周期 | 全局状态 UI 统一完成 |
 
 ## 7. 文档索引
 
@@ -168,3 +171,4 @@ adb shell am start -n com.example.wordmemory/com.example.wordmemory.board.BoardM
 - [M7.5：通知权限与 WorkManager 复习提醒](docs/06-通知与定时提醒.md)
 - [M8：P2 数据看板模块](docs/07-数据看板模块.md)
 - [自选：错题卡片图片分享](docs/08-错题卡片分享.md)
+- [统一状态与 UI 规范](docs/09-统一状态与UI规范.md)

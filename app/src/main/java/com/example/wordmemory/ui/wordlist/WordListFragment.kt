@@ -12,7 +12,6 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -23,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wordmemory.R
+import com.example.wordmemory.core.ui.ToastUtils
 import com.example.wordmemory.data.local.entity.Word
 import com.example.wordmemory.databinding.DialogWordEditBinding
 import com.example.wordmemory.databinding.FragmentWordListBinding
@@ -58,11 +58,7 @@ class WordListFragment : Fragment() {
     ) { granted ->
         reminderViewModel.onPermissionResult(granted)
         if (!granted) {
-            Toast.makeText(
-                requireContext(),
-                R.string.notification_permission_off,
-                Toast.LENGTH_LONG,
-            ).show()
+            ToastUtils.show(requireContext(), R.string.notification_permission_off)
         }
     }
 
@@ -93,7 +89,6 @@ class WordListFragment : Fragment() {
         )
         binding.swipeRefresh.setOnRefreshListener { viewModel.refresh() }
         binding.fabAdd.setOnClickListener { showWordDialog(null) }
-        binding.btnEmptyAdd.setOnClickListener { showWordDialog(null) }
         binding.btnNotificationSettings.setOnClickListener { openNotificationSettings() }
 
         // 页面创建时确保每日提醒已调度；ViewModel + 唯一任务名双重防重复
@@ -107,7 +102,7 @@ class WordListFragment : Fragment() {
                 }
                 launch {
                     viewModel.events.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                        ToastUtils.show(requireContext(), message)
                     }
                 }
                 launch {
@@ -125,12 +120,32 @@ class WordListFragment : Fragment() {
     private fun render(state: WordListUiState) {
         adapter.submitList(state.words)
         binding.tvCount.text = getString(R.string.word_list_count, state.words.size)
-
-        val hasWords = state.words.isNotEmpty()
-        binding.contentContainer.isVisible = hasWords
-        binding.loadingContainer.isVisible = state.isLoading && !hasWords
-        binding.emptyContainer.isVisible = !state.isLoading && !hasWords
         binding.swipeRefresh.isRefreshing = state.isRefreshing
+
+        when {
+            state.errorMessage != null -> {
+                binding.stateLayout.showError(state.errorMessage) {
+                    viewModel.retry()
+                }
+            }
+
+            state.isLoading && state.words.isEmpty() -> {
+                binding.stateLayout.showLoading()
+            }
+
+            state.words.isEmpty() -> {
+                binding.stateLayout.showEmpty(
+                    title = getString(R.string.word_list_empty_title),
+                    message = getString(R.string.word_list_empty_desc),
+                    actionText = getString(R.string.word_add_first),
+                    onAction = { showWordDialog(null) },
+                )
+            }
+
+            else -> {
+                binding.stateLayout.showContent()
+            }
+        }
     }
 
     /**

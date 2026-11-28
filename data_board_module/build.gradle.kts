@@ -23,6 +23,7 @@ android {
 dependencies {
     // 复用主 App 的 Room 实体、DAO 和 AppDatabase
     implementation(project(":core_data"))
+    implementation(project(":core_ui"))
     implementation("androidx.room:room-runtime:2.8.5")
 
     implementation("androidx.core:core-ktx:1.16.0")
