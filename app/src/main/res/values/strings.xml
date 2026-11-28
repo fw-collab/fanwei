@@ -84,6 +84,11 @@
     <string name="wrong_not_found">错题记录不存在</string>
     <string name="wrong_not_found_desc">它可能已经被移出错题本。</string>
     <string name="wrong_removed">已从错题本移除</string>
+    <string name="wrong_share">分享错题卡片</string>
+    <string name="wrong_sharing">正在生成卡片…</string>
+    <string name="wrong_share_chooser">分享错题卡片</string>
+    <string name="wrong_share_failed">分享失败，请重试</string>
+    <string name="wrong_share_no_app">没有可分享的应用</string>
 
     <string name="stat_eyebrow">OVERVIEW</string>
     <string name="stat_title">数据概览</string>

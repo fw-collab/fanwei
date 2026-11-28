@@ -1,6 +1,9 @@
 package com.example.wordmemory.ui.wrongbook
 
+import android.content.ActivityNotFoundException
+import android.content.ClipData
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +19,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.wordmemory.R
 import com.example.wordmemory.databinding.FragmentWrongDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -42,6 +48,7 @@ class WrongDetailFragment : Fragment() {
 
     private val timeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
     private var navigatedBack = false
+    private var isSharing = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +66,7 @@ class WrongDetailFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding.btnRemove.setOnClickListener { confirmRemove() }
+        binding.btnShare.setOnClickListener { shareCard() }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -87,6 +95,10 @@ class WrongDetailFragment : Fragment() {
         binding.emptyContainer.isVisible = !state.isLoading && item == null
 
         binding.btnRemove.isEnabled = item != null && !state.isRemoving
+        binding.btnShare.isEnabled = item != null && !isSharing
+        binding.btnShare.text = getString(
+            if (isSharing) R.string.wrong_sharing else R.string.wrong_share
+        )
 
         if (item != null) {
             binding.tvWord.text = item.spelling
@@ -97,6 +109,72 @@ class WrongDetailFragment : Fragment() {
                 item.wrongCount,
             )
             binding.tvLastWrongValue.text = timeFormatter.format(Date(item.lastWrongAt))
+        }
+    }
+
+    /**
+     * 生成卡片位图并保存到 cache，然后交给系统分享。
+     * 位图生成和文件写入都在后台线程，避免阻塞主线程。
+     */
+    private fun shareCard() {
+        val item = viewModel.uiState.value.item ?: return
+        if (isSharing) return
+
+        val appContext = requireContext().applicationContext
+        isSharing = true
+        binding.btnShare.isEnabled = false
+        binding.btnShare.text = getString(R.string.wrong_sharing)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val bitmap = withContext(Dispatchers.Default) {
+                    WrongCardGenerator.generate(item)
+                }
+                val uri = withContext(Dispatchers.IO) {
+                    WrongCardGenerator.saveToCache(appContext, bitmap, item.wordId)
+                }
+                shareUri(uri)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Toast.makeText(
+                    appContext,
+                    R.string.wrong_share_failed,
+                    Toast.LENGTH_SHORT,
+                ).show()
+            } finally {
+                isSharing = false
+                if (_binding != null) {
+                    binding.btnShare.isEnabled = true
+                    binding.btnShare.text = getString(R.string.wrong_share)
+                }
+            }
+        }
+    }
+
+    private fun shareUri(uri: android.net.Uri) {
+        val sendIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "image/png"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            clipData = ClipData.newRawUri("wrong_card", uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        try {
+            startActivity(
+                Intent.createChooser(sendIntent, getString(R.string.wrong_share_chooser))
+            )
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(
+                requireContext(),
+                R.string.wrong_share_no_app,
+                Toast.LENGTH_SHORT,
+            ).show()
+        } catch (e: Exception) {
+            Toast.makeText(
+                requireContext(),
+                R.string.wrong_share_failed,
+                Toast.LENGTH_SHORT,
+            ).show()
         }
     }
 

@@ -149,11 +149,23 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnShare"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/wrong_share"
+                    android:textColor="@color/surface"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/blue_primary"
+                    app:cornerRadius="16dp" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnRemove"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/wrong_remove"
                     android:textColor="@color/orange_primary"
                     android:textSize="15sp"

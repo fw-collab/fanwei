@@ -27,7 +27,7 @@
 | B4-06 | 学习记录与统计 | 每日新学/复习数量、正确率、连续天数；按日查看历史记录 |
 | B4-07 | 设置与数据管理 | 每日目标、TTS 开关、主题模式、学习数据重置、关于页面 |
 
-> 当前已实现：Room 单词本列表、下拉刷新、新增/编辑/删除、加载态和空态；复习卡片翻转、记住/忘记分支和复习完成空态；错题本列表、详情和移出错题本；通知权限申请、每日 WorkManager 复习提醒和权限关闭降级提示。数据、设置两个 Tab 仍为页面空壳。
+> 当前已实现：Room 单词本列表、下拉刷新、新增/编辑/删除、加载态和空态；复习卡片翻转、记住/忘记分支和复习完成空态；错题本列表、详情、移出错题本和错题卡片分享；通知权限申请、每日 WorkManager 复习提醒和权限关闭降级提示。数据、设置两个 Tab 仍为页面空壳。
 
 ### 2.2 伴生端：P2 数据看板
 
@@ -55,6 +55,7 @@
 | 后台任务 | WorkManager 2.10.0，每日 20:00 查询待复习单词 |
 | 系统通知 | NotificationChannel + Android 13+ POST_NOTIFICATIONS 动态权限 |
 | 文件导出 | MediaStore.Downloads（Android 10+），CSV 复习记录导出 |
+| 图片分享 | Canvas Bitmap 生成错题卡片 + FileProvider + 系统分享 |
 | 图表 | MPAndroidChart 3.1.0（折线图/饼图/柱状图） |
 | 系统能力 | TextToSpeech、ContentProvider / ContentResolver、自定义 View、属性动画 |
 | 测试 | JUnit4、AndroidX Test、Espresso、Room 内存数据库 |
@@ -155,6 +156,7 @@ adb shell am start -n com.example.wordmemory/com.example.wordmemory.board.BoardM
 | M7 | 错题本列表（按单词聚合错误次数/最近时间）、错题详情、移出错题本、列表→详情导航 | 错题展示管理完成 |
 | M7.5 | Android 13+ 通知权限、每日 WorkManager 提醒、NotificationChannel、权限关闭降级提示 | 后台提醒与降级方案完成 |
 | M8 | P2 `data_board_module`、独立 Launcher、共享 `core_data` Room、MPAndroidChart 柱状图/饼图、CSV 导出 | 看板骨架、图表与文件导出完成 |
+| 自选 | 错题卡片 Bitmap 生成、FileProvider、系统分享 | 错题图片卡片分享完成 |
 
 ## 7. 文档索引
 
@@ -165,3 +167,4 @@ adb shell am start -n com.example.wordmemory/com.example.wordmemory.board.BoardM
 - [里程碑 5：艾宾浩斯遗忘曲线算法](docs/05-艾宾浩斯算法.md)
 - [M7.5：通知权限与 WorkManager 复习提醒](docs/06-通知与定时提醒.md)
 - [M8：P2 数据看板模块](docs/07-数据看板模块.md)
+- [自选：错题卡片图片分享](docs/08-错题卡片分享.md)
