@@ -116,7 +116,11 @@ danci/
 │  ├─ 03-数据共享契约.md
 │  ├─ 04-数据模型设计.md
 │  ├─ 05-艾宾浩斯算法.md
-│  └─ 06-通知与定时提醒.md
+│  ├─ 06-通知与定时提醒.md
+│  ├─ 07-数据看板模块.md
+│  ├─ 08-错题卡片分享.md
+│  ├─ 09-统一状态与UI规范.md
+│  └─ 10-课程设计开发文档.md
 ├─ core_data/schemas/       # Room 导出的数据库 schema
 ├─ gradle/wrapper/          # Gradle Wrapper
 ├─ gradlew
@@ -172,3 +176,4 @@ adb shell am start -n com.example.wordmemory/com.example.wordmemory.board.BoardM
 - [M8：P2 数据看板模块](docs/07-数据看板模块.md)
 - [自选：错题卡片图片分享](docs/08-错题卡片分享.md)
 - [统一状态与 UI 规范](docs/09-统一状态与UI规范.md)
+- [课程设计开发文档（可直接导出 PDF）](docs/10-课程设计开发文档.md)
